@@ -36,6 +36,11 @@ nav a:hover {
 .content p {
     color: #666;
 }
+.links{
+    display: flex;
+    text-decoration: none;
+    justify-content: space-around;
+}
 footer {
     background-color: #333;
     color: white;

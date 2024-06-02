@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+    <link   rel="stylesheet" href="{% static 'Frontend/signUp.css' %}"/>
+</head>
+<body>
+    <form action="{% url 'category' %}" method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+    <label for="password">Name</label>
+    <input type="text" name="name" placeholder="Enter the category">
+    </div>
+    <label for="password">Description</label>
+    <div class="form-group">
+    <input type="text" name="description" placeholder="Enter the description">
+    </div>
+    <button type="submit" class="signup-btn">Done</button>
+    </form>
+</body>
+</html>

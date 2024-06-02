@@ -72,3 +72,25 @@ def shop(request):
 
 def about(request):
     return render(request,"Frontend/about.html")
+
+
+def category(request):
+    if request.method == "POST":
+        name = request.POST["name"]
+        description = request.POST["description"]
+
+        if name and description:
+            category = Category.objects.create(name = name, description = description)
+            print(category)
+            return HttpResponseRedirect(reverse('add-product'))
+
+        else:
+            messages.error(request,"Fill all the fields")
+
+    else:
+        return render(request,"Frontend/category.html")
+
+def product(request):
+    return render(request,"Frontend/product.html",{
+        "categories" : Category.objects.all()
+    })

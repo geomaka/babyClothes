@@ -1,0 +1,73 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+    <link rel="stylesheet" href="{% static 'Frontend/signUp.css' %}" />
+    <script>
+        function addProductForm() {
+            const formContainer = document.getElementById('product-forms');
+            const productForm = document.querySelector('.product-form').cloneNode(true);
+            productForm.querySelectorAll('input, textarea, select').forEach(input => {
+                input.value = '';
+            });
+            formContainer.appendChild(productForm);
+        }
+    </script>
+</head>
+
+<body>
+    <form action="{% url 'category' %}" method="POST">
+        {% csrf_token %}
+    <div class="signup-container">
+        <h2>Product</h2>
+        <div style="margin: 10px;margin-left:0;">
+            <label for="category">Category:</label>
+            <select name="category[]" required>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" name="name[]" required maxlength="255">
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea name="description[]" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" name="price[]" required step="0.01">
+        </div>
+        <div class="form-group">
+            <label for="stock">Stock:</label>
+            <input type="number" name="stock[]" required placeholder="number available">
+        </div>
+        <div style="margin: 10px;margin-left:0;">
+            <label for="available">Available:</label>
+            <input type="checkbox" name="available[]" checked>
+        </div>
+        <div style="margin: 10px;margin-left:0;">
+            <label for="image">Image:</label>
+            <input type="file" name="image[]">
+        </div>
+        <hr>
+        </div>
+        </div>
+        <div>
+            <button type="button" onclick="addProductForm()" class="signup-btn" style="margin: 10px;margin-left:0;">Add Another Product</button>
+        </div>
+        <div>
+            <button type="submit" class="signup-btn" style="margin: 10px;margin-left:0;" >Add Products</button>
+        </div>
+    </div>
+    </form>
+</body>
+
+</html>
