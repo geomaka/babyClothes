@@ -5,21 +5,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup Page</title>
-    <link   rel="stylesheet" href="{% static 'Frontend/signUp.css' %}"/>
+    <title>Add Categories</title>
+    <link rel="stylesheet" href="{% static 'Frontend/signUp.css' %}"/>
+    <script>
+        function addCategoryForm() {
+            const formContainer = document.getElementById('category-forms');
+            const categoryForm = document.querySelector('.category-form').cloneNode(true);
+            categoryForm.querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+            formContainer.appendChild(categoryForm);
+        }
+    </script>
 </head>
 <body>
+    <div class="signup-container">
+    <h1>Add Categories</h1>
     <form action="{% url 'category' %}" method="POST">
-    {% csrf_token %}
-    <div class="form-group">
-    <label for="password">Name</label>
-    <input type="text" name="name" placeholder="Enter the category">
-    </div>
-    <label for="password">Description</label>
-    <div class="form-group">
-    <input type="text" name="description" placeholder="Enter the description">
-    </div>
-    <button type="submit" class="signup-btn">Done</button>
+        {% csrf_token %}
+        <div id="category-forms">
+            <div class="category-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" name="name[]" placeholder="Enter the category" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description[]" placeholder="Enter the description"></textarea>
+                </div>
+                <hr>
+            </div>
+        </div>
+        <div>
+            <button type="button" onclick="addCategoryForm()" class="signup-btn" style="margin: 10px;margin-left: 0;">Add Another Category</button>
+        </div>
+        <div>
+            <button type="submit" class="signup-btn">Done</button>
+        </div>
     </form>
+    </div>
 </body>
 </html>
