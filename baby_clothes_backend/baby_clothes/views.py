@@ -76,13 +76,16 @@ def about(request):
 
 def category(request):
     if request.method == "POST":
-        name = request.POST["name"]
-        description = request.POST["description"]
+        names = request.POST.getlist('name[]')
+        descriptions = request.POST.getlist('description[]')
 
-        if name and description:
-            category = Category.objects.create(name = name, description = description)
-            print(category)
-            return HttpResponseRedirect(reverse('add-product'))
+        if names and descriptions:
+            for i in range(len(names)):
+                name = names[i]
+                description = descriptions[i]
+                Category.objects.create(name=name, description=description)
+                print(category)
+                return HttpResponseRedirect(reverse('add-product'))
 
         else:
             messages.error(request,"Fill all the fields")
@@ -91,6 +94,34 @@ def category(request):
         return render(request,"Frontend/category.html")
 
 def product(request):
+    if request.method == 'POST':
+        categories = request.POST.getlist('category[]')
+        names = request.POST.getlist('name[]')
+        descriptions = request.POST.getlist('description[]')
+        prices = request.POST.getlist('price[]')
+        stocks = request.POST.getlist('stock[]')
+        availables = request.POST.getlist('available[]')
+        images = request.FILES.getlist('image[]')
+
+        for i in range(len(names)):
+            category = Category.objects.get(id=categories[i])
+            name = names[i]
+            description = descriptions[i]
+            price = prices[i]
+            stock = stocks[i]
+            available = availables[i] == 'on'
+            image = images[i] if i < len(images) else None
+
+            Product.objects.create(
+                category=category,
+                name=name,
+                description=description,
+                price=price,
+                stock=stock,
+                available=available,
+                image=image
+            )
+            # return HttpResponseRedirect(reverse('shop'))
     return render(request,"Frontend/product.html",{
         "categories" : Category.objects.all()
     })
