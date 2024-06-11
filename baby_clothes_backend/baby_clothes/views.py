@@ -2,8 +2,8 @@ from django.contrib.auth.hashers import make_password,check_password
 from django.shortcuts import render
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import User, Category, Product, Customer, Order, OrderItem, Review, Cart, CartItem
-from django.contrib.auth import authenticate, login, logout
+from .models import Person, Category, Product, Customer, Order, OrderItem, Review, Cart, CartItem
+from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth import login as auth_login
 from django.urls import reverse
 from django.contrib.auth.models import User
@@ -27,7 +27,7 @@ def sign_in(request):
 
         if user_name and email and password and password2:
             hashed_password = make_password(password)
-            user = User.objects.create(user_name = user_name, email = email, password = hashed_password)
+            user = Person.objects.create(user_name=user_name, email=email, password=hashed_password)
             print(user)
             return HttpResponseRedirect(reverse("index"))
         else:
@@ -45,15 +45,24 @@ def log_in(request):
             messages.error(request, "Please fill in all fields")
             return render(request, "Frontend/login.html")
 
-        user = User.objects.get(email = email)
-        if user is not None:
-            auth_login(request, user)
+        try:
+            person = Person.objects.get(email=email)
+        except Person.DoesNotExist:
+            person = None
+
+        if person is not None:
+            if check_password(password,person.password):
+                user, created = User.objects.get_or_create(email=person.email,defaults={"password":password})
+                if created:
+                    user.set_password(password)
+                    user.save()
+
+                auth_login(request, user)
             return HttpResponseRedirect(reverse("index"))
         else:
-            messages.error(request, "Wrong credentials")
+            messages.error(request, "User with this email does not exist")
 
     return render(request, "Frontend/login.html")
-
 
 def log_out(request):
     logout(request)

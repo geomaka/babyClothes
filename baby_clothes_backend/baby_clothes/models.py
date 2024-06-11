@@ -1,6 +1,6 @@
 from django.db import models
 
-class User(models.Model):
+class Person(models.Model):
     user_name = models.CharField(max_length = 64)
     email = models.EmailField(max_length = 64)
     password = models.CharField(max_length = 64)
@@ -30,7 +30,7 @@ class Product(models.Model):
         return self.name
 
 class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(Person, on_delete=models.CASCADE)
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
 
