@@ -1,9 +1,5 @@
 from django.contrib.auth.hashers import make_password,check_password
-<<<<<<< HEAD
-from django.shortcuts import render
-=======
 from django.shortcuts import render,get_object_or_404, redirect
->>>>>>> master
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Person, Category, Product, Customer, Order, OrderItem, Review, Cart, CartItem
@@ -11,16 +7,6 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth import login as auth_login
 from django.urls import reverse
 from django.contrib.auth.models import User
-<<<<<<< HEAD
-
-
-def index(request):
-    return render(request,'Frontend\homepage.html')
-
-def sign_in(request):
-    if request.method == 'POST':
-        user_name = request.POST['username']
-=======
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -34,7 +20,6 @@ def index(request):
 def sign_in(request):
     if request.method == 'POST':
         user_name = request.POST['user_name']
->>>>>>> master
         email = request.POST['email']
         password = request.POST['password']
         password2 = request.POST["confirm-password"]
@@ -72,11 +57,7 @@ def log_in(request):
 
         if person is not None:
             if check_password(password,person.password):
-<<<<<<< HEAD
-                user, created = User.objects.get_or_create(email=person.email,defaults={"password":password})
-=======
                 user, created = User.objects.get_or_create(email=person.email,defaults={"password":password},username=person.user_name)
->>>>>>> master
                 if created:
                     user.set_password(password)
                     user.save()
@@ -88,10 +69,6 @@ def log_in(request):
 
     return render(request, "Frontend/login.html")
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
 def log_out(request):
     logout(request)
 
@@ -105,9 +82,6 @@ def contact(request):
 
 
 def shop(request):
-<<<<<<< HEAD
-    return render(request,"Frontend/shop.html")
-=======
     products = Product.objects.filter(available=True)
     return render(request, "Frontend/shop.html", {'products': products})
 
@@ -126,7 +100,6 @@ def add_to_cart(request, product_id):
         cart_item.save()
     
     return redirect('shop')
->>>>>>> master
 
 def about(request):
     return render(request,"Frontend/about.html")
@@ -179,12 +152,6 @@ def product(request):
                 available=available,
                 image=image
             )
-<<<<<<< HEAD
-            # return HttpResponseRedirect(reverse('shop'))
-    return render(request,"Frontend/product.html",{
-        "categories" : Category.objects.all()
-    })
-=======
             return HttpResponseRedirect(reverse('shop'))
     return render(request,"Frontend/product.html",{
         "categories" : Category.objects.all()
@@ -270,4 +237,3 @@ def send_seller_notification_email(order):
     html_message = render_to_string('Frontend/seller_notification.html', {'order': order})
     plain_message = strip_tags(html_message)
     send_mail(subject, plain_message, None, sellers_emails, html_message=html_message)
->>>>>>> master

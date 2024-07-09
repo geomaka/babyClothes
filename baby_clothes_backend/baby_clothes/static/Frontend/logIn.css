@@ -39,9 +39,9 @@ body {
     color: white;
     border-radius: 4px;
     cursor: pointer;
-    text-decoration: none; /* Remove default button styling */
-    display: block; /* Make it a block-level element */
-    text-align: center; /* Center the text */
+    text-decoration: none;
+    display: block; 
+    text-align: center; 
 }
 .login-btn:hover {
     background-color: #45a049;
