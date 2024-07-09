@@ -1,13 +1,25 @@
 {% load static %}
+<<<<<<< HEAD
 
 <!DOCTYPE html>
 <html lang="en">
+=======
+<!DOCTYPE html>
+<html lang="en">
+
+>>>>>>> master
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shop</title>
+<<<<<<< HEAD
     <link rel="stylesheet" href="{% static 'Frontend/shop.css' %}"/>
 </head>
+=======
+    <link rel="stylesheet" href="{% static 'Frontend/shop.css' %}">
+</head>
+
+>>>>>>> master
 <body>
     <header>
         <h1>Baby Clothes Store</h1>
@@ -16,6 +28,7 @@
         <a href="{% url 'index' %}">Home</a>
         <a href="{% url 'shop' %}">Shop</a>
         <a href="{% url 'about' %}">About</a>
+<<<<<<< HEAD
         <a href="{% url 'contact'%}">Contact</a>
         <a href="{% url 'logout' %}">Logout</a>
     </nav>
@@ -32,3 +45,45 @@
     </div>
 </body>
 </html>
+=======
+        <a href="{% url 'contact' %}">Contact</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'view_cart' %}">Cart {% if cart_item_count > 0 %}<span class="bubble">{{ cart_item_count
+                }}</span>{% endif %}</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        {% endif %}
+        {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </nav>
+    <div class="shop-container">
+        {% for product in products %}
+        <div class="item">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
+            <img src="{% static 'Frontend/default-product.jpg' %}" alt="{{ product.name }}">
+            {% endif %}
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <p>${{ product.price }}</p>
+            <p>Stock: {{ product.stock }}</p>
+            {% if user.is_authenticated %}
+            {% if product.available %}
+            <form action="{% url 'add_to_cart' product.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Add to Cart</button>
+            </form>
+            {% else %}
+            <button type="button" disabled>Out of Stock</button>
+            {% endif %}
+            {% else %}
+            <a href="{% url 'login' %}?next={% url 'shop' %}" class="button">Sign in to order</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>
+>>>>>>> master

@@ -38,4 +38,19 @@ nav a:hover {
 .about-container p {
     color: #666;
     line-height: 1.6;
+<<<<<<< HEAD
 }
+=======
+}
+.bubble {
+    position: relative;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 4px 8px;
+    font-size: 12px;
+    top: -10px;
+    right: -10px;
+    display: inline-block;
+}
+>>>>>>> master

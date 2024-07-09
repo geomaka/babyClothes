@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>New Order Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        select, button {
+            padding: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <p>Dear Seller,</p>
+    <p>You have received a new order:</p>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Customer: {{ order.customer.user.user_name }}</p>
+    <p>Order Details:</p>
+    <ul>
+        {% for item in order.items.all %}
+        <li>{{ item.product.name }} - Quantity: {{ item.quantity }} - Price: ksh {{ item.price }}</li>
+        {% endfor %}
+    </ul>
+    <p>Please select the new status for this order:</p>
+    <form action="{% url 'update_order_status' order.id %}" method="post">
+        {% csrf_token %}
+        <select name="status">
+            <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+            <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
+            <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Completed</option>
+            <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+        </select>
+        <button type="submit">Update Status</button>
+    </form>
+</body>
+</html>

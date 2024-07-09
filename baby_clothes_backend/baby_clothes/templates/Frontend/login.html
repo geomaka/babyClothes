@@ -19,7 +19,11 @@
             <li style="color: red;">{{ message }}</li>
         {% endfor %}
         </ul>
+<<<<<<< HEAD
          {% endif %}
+=======
+        {% endif %}
+>>>>>>> master
         <h2>Login</h2>
         <form action="{% url 'login' %}" method="POST">
             {% csrf_token %}
@@ -33,6 +37,15 @@
             </div>
             <button type="submit" class="login-btn">Log in</button>
         </form>
+<<<<<<< HEAD
+=======
+        
+        <hr> 
+        
+        <form action="{% url 'signup' %}">
+            <button type="submit" class="login-btn">Create an Account</button>
+        </form>
+>>>>>>> master
     </div>
 </body>
 </html>

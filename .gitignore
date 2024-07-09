@@ -1,1 +1,2 @@
-baby_clothes_backend\baby_clothes\migrations
+baby_clothes_backend/baby_clothes/migrations/0001_initial.py
+baby_clothes_backend/db.sqlite3

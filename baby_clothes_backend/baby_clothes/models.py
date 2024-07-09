@@ -31,11 +31,18 @@ class Product(models.Model):
 
 class Customer(models.Model):
     user = models.OneToOneField(Person, on_delete=models.CASCADE)
+<<<<<<< HEAD
     phone = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.user.username
+=======
+
+
+    def __str__(self):
+        return self.user.user_name
+>>>>>>> master
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer, related_name='orders', on_delete=models.CASCADE)
@@ -49,7 +56,11 @@ class Order(models.Model):
     ))
 
     def __str__(self):
+<<<<<<< HEAD
         return f'Order {self.id} by {self.customer.user.username}'
+=======
+        return f'Order {self.id} by {self.customer.user.user_name}'
+>>>>>>> master
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
@@ -85,5 +96,27 @@ class CartItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+<<<<<<< HEAD
     def __str__(self):
         return f'{self.product.name} ({self.quantity}) in cart of {self.cart.customer.user.username}'
+=======
+    def save(self, adjusting_quantity=False, *args, **kwargs):
+        if adjusting_quantity:
+            if not self.pk:
+                self.product.stock -= self.quantity
+                if self.product.stock <= 0:
+                    self.product.available = False
+                self.product.save()
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.product.name} ({self.quantity}) in cart of {self.cart.customer.user.username}'
+
+    def delete(self, *args, **kwargs):
+        self.product.stock += self.quantity
+        if self.product.stock > 0:
+            self.product.available = True
+        self.product.save()
+        super().delete(*args, **kwargs)
+>>>>>>> master

@@ -1,5 +1,9 @@
 from django.contrib.auth.hashers import make_password,check_password
+<<<<<<< HEAD
 from django.shortcuts import render
+=======
+from django.shortcuts import render,get_object_or_404, redirect
+>>>>>>> master
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import Person, Category, Product, Customer, Order, OrderItem, Review, Cart, CartItem
@@ -7,6 +11,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth import login as auth_login
 from django.urls import reverse
 from django.contrib.auth.models import User
+<<<<<<< HEAD
 
 
 def index(request):
@@ -15,6 +20,21 @@ def index(request):
 def sign_in(request):
     if request.method == 'POST':
         user_name = request.POST['username']
+=======
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from decimal import Decimal
+
+
+def index(request):
+    return render(request,'Frontend/homepage.html')
+
+def sign_in(request):
+    if request.method == 'POST':
+        user_name = request.POST['user_name']
+>>>>>>> master
         email = request.POST['email']
         password = request.POST['password']
         password2 = request.POST["confirm-password"]
@@ -52,7 +72,11 @@ def log_in(request):
 
         if person is not None:
             if check_password(password,person.password):
+<<<<<<< HEAD
                 user, created = User.objects.get_or_create(email=person.email,defaults={"password":password})
+=======
+                user, created = User.objects.get_or_create(email=person.email,defaults={"password":password},username=person.user_name)
+>>>>>>> master
                 if created:
                     user.set_password(password)
                     user.save()
@@ -64,6 +88,10 @@ def log_in(request):
 
     return render(request, "Frontend/login.html")
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 def log_out(request):
     logout(request)
 
@@ -77,7 +105,28 @@ def contact(request):
 
 
 def shop(request):
+<<<<<<< HEAD
     return render(request,"Frontend/shop.html")
+=======
+    products = Product.objects.filter(available=True)
+    return render(request, "Frontend/shop.html", {'products': products})
+
+@login_required
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    person, created = Person.objects.get_or_create(user_name=request.user.username, email=request.user.email)
+    customer, created = Customer.objects.get_or_create(user=person)
+    
+    cart, created = Cart.objects.get_or_create(customer=customer)
+    
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product,quantity=1)
+    
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+    
+    return redirect('shop')
+>>>>>>> master
 
 def about(request):
     return render(request,"Frontend/about.html")
@@ -130,7 +179,95 @@ def product(request):
                 available=available,
                 image=image
             )
+<<<<<<< HEAD
             # return HttpResponseRedirect(reverse('shop'))
     return render(request,"Frontend/product.html",{
         "categories" : Category.objects.all()
     })
+=======
+            return HttpResponseRedirect(reverse('shop'))
+    return render(request,"Frontend/product.html",{
+        "categories" : Category.objects.all()
+    })
+
+@login_required
+def view_cart(request):
+    customer = get_object_or_404(Customer, user=request.user.id)
+    cart = get_object_or_404(Cart, customer=customer)
+    total_price = 0
+    
+    for item in cart.items.all():
+        total_price += item.product.price * item.quantity
+    
+    return render(request, 'Frontend/view_cart.html', {'cart': cart, 'total_price': total_price})
+
+@login_required
+def place_order(request):
+    customer = get_object_or_404(Customer, user=request.user.id)
+    cart = get_object_or_404(Cart, customer=customer)
+    
+    order = Order.objects.create(customer=customer, status='Pending')
+    total_price = Decimal('0.00')
+    
+    for cart_item in cart.items.all():
+        item_price = cart_item.product.price * cart_item.quantity
+        total_price += item_price
+
+    for cart_item in cart.items.all():
+        OrderItem.objects.create(
+            order=order,
+            product=cart_item.product,
+            quantity=cart_item.quantity,
+            price=item_price
+        )
+    
+    cart.items.all().delete
+    
+    send_order_confirmation_email(request.user.email, order)
+    send_seller_notification_email(order)
+
+    messages.success(request, 'Your order has been placed successfully!')
+    return render(request,'Frontend/order_confirmation.html') 
+
+
+@login_required
+def update_cart(request, cart_item_id):
+    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    
+    if request.method == 'POST':
+        quantity = int(request.POST['quantity'])
+        cart_item.quantity = quantity
+        cart_item.save()
+
+    return redirect('view_cart')
+
+@login_required
+def remove_from_cart(request, cart_item_id):
+    cart_item = get_object_or_404(CartItem, id=cart_item_id)
+    cart_item.delete()
+    return redirect('view_cart')
+
+def update_order_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in dict(Order.STATUS_CHOICES):
+            order.status = new_status
+            order.save()
+
+    return redirect('order_detail', order_id=order.id)
+
+def send_order_confirmation_email(customer_email, order):
+    subject = 'Order Confirmation'
+    html_message = render_to_string('Frontend/order_confirmation.html', {'order': order})
+    plain_message = strip_tags(html_message)
+    send_mail(subject, plain_message, None, [customer_email], html_message=html_message)
+
+def send_seller_notification_email(order):
+    sellers_emails = [seller.email for seller in User.objects.filter(is_staff=True)]
+    subject = f'New Order: #{order.id} from {order.customer.user.user_name}'
+    html_message = render_to_string('Frontend/seller_notification.html', {'order': order})
+    plain_message = strip_tags(html_message)
+    send_mail(subject, plain_message, None, sellers_emails, html_message=html_message)
+>>>>>>> master
