@@ -1,0 +1,44 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="{% static 'Frontend/logIn.css' %}"/>
+</head>
+<body>
+    <div class="login-container">
+        {% if message %}
+            <p style="color: red;">{{ message }}</p>
+        {% endif %}
+        {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li style="color: red;">{{ message }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+        <h2>Login</h2>
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" id="username" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="login-btn">Log in</button>
+        </form>
+        
+        <hr> 
+        
+        <form action="{% url 'signup' %}">
+            <button type="submit" class="login-btn">Create an Account</button>
+        </form>
+    </div>
+</body>
+</html>

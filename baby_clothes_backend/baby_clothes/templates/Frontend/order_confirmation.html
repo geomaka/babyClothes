@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <p>Dear {{ order.customer.user.user_name }},</p>
+    <p>Your order has been successfully placed with us. Here are the details:</p>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Order Details:</p>
+    <ul>
+        {% for item in order.items.all %}
+        <li>{{ item.product.name }} - Quantity: {{ item.quantity }} - Price: ksh {{ item.price }}</li>
+        {% endfor %}
+    </ul>
+    <p>Your order is currently <strong>{{ order.status }}</strong>.</p>
+    <p>Thank you for shopping with us!</p>
+</body>
+</html>
