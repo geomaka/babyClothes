@@ -42,9 +42,6 @@ nav a:hover {
 .contact-info p {
     color: #666;
     line-height: 1.6;
-<<<<<<< HEAD
-}
-=======
 }
 .bubble {
     position: relative;
@@ -57,4 +54,3 @@ nav a:hover {
     right: -10px;
     display: inline-block;
 }
->>>>>>> master
